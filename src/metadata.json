@@ -1,0 +1,10 @@
+{
+  "name": "Click to close overview",
+  "description": "Allow to close the overview by clicking empty space.",
+  "uuid": "click-to-close-overview@l3nn4rt.github.io",
+  "shell-version": [
+    "3.38"
+  ],
+  "url": "https://github.com/l3nn4rt/click-to-close-overview",
+  "version": 0.1
+}

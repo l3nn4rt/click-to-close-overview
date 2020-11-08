@@ -32,8 +32,11 @@ class ClickToCloseOverview {
 
 		this._clickAction = new Clutter.ClickAction();
 		this._clickAction.connect('clicked', () => {
-			if (!this._swiping)
+			if (!this._swiping) {
+				if (Main.overview.viewSelector._appsPage.visible)
+					Main.overview.viewSelector.appDisplay.animate();
 				Main.overview.toggle();
+			}
 		});
 		Main.overview.viewSelector.add_action(this._clickAction);
 
@@ -54,7 +57,6 @@ class ClickToCloseOverview {
 				})
 			]);
 		});
-
 	}
 
 	disable() {

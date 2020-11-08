@@ -15,22 +15,23 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
+'use strict';
 
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
 class ClickToCloseOverview {
 	enable() {
-		this.handlers = [];
-		this.swiping = false;
+		this._handlers = [];
+		this._swiping = false;
 
-		this.oldReactivity = Main.overview.viewSelector.reactive;
+		this._oldReactivity = Main.overview.viewSelector.reactive;
 		Main.overview.viewSelector.reactive = true;
 
-		this.handlers.push([
+		this._handlers.push([
 			Main.overview.viewSelector,
 			Main.overview.viewSelector.connect('button-release-event', () => {
-				if (!this.swiping)
+				if (!this._swiping)
 					Main.overview.toggle();
 			})
 		]);
@@ -39,16 +40,16 @@ class ClickToCloseOverview {
 			Main.overview.viewSelector._workspacesDisplay,
 			Main.overview.viewSelector.appDisplay
 		].map(display => display._swipeTracker).forEach(tracker => {
-			this.handlers.push([
+			this._handlers.push([
 				tracker,
 				tracker.connect('begin', () => {
-					this.swiping = true;
+					this._swiping = true;
 				})
 			]);
-			this.handlers.push([
+			this._handlers.push([
 				tracker,
 				tracker.connect('end', () => {
-					Mainloop.timeout_add(0, () => this.swiping = false);
+					Mainloop.timeout_add(0, () => this._swiping = false);
 				})
 			]);
 		});
@@ -56,11 +57,11 @@ class ClickToCloseOverview {
 	}
 
 	disable() {
-		Main.overview.viewSelector.reactive = this.oldReactivity;
-		delete this.oldReactivity;
+		Main.overview.viewSelector.reactive = this._oldReactivity;
+		this._oldReactivity = null;
 
-		this.handlers.forEach(([obj, callback]) => obj.disconnect(callback));
-		delete this.handlers;
+		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
+		this._handlers = null;
 	}
 }
 

@@ -20,6 +20,8 @@
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
+const Clutter = imports.gi.Clutter;
+
 class ClickToCloseOverview {
 	enable() {
 		this._handlers = [];
@@ -28,13 +30,12 @@ class ClickToCloseOverview {
 		this._oldReactivity = Main.overview.viewSelector.reactive;
 		Main.overview.viewSelector.reactive = true;
 
-		this._handlers.push([
-			Main.overview.viewSelector,
-			Main.overview.viewSelector.connect('button-release-event', () => {
-				if (!this._swiping)
-					Main.overview.toggle();
-			})
-		]);
+		this._clickAction = new Clutter.ClickAction();
+		this._clickAction.connect('clicked', () => {
+			if (!this._swiping)
+				Main.overview.toggle();
+		});
+		Main.overview.viewSelector.add_action(this._clickAction);
 
 		[
 			Main.overview.viewSelector._workspacesDisplay,
@@ -62,6 +63,8 @@ class ClickToCloseOverview {
 
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;
+
+		Main.overview.viewSelector.remove_action(this._clickAction);
 	}
 }
 

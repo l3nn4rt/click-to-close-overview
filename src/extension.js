@@ -17,6 +17,7 @@
  */
 'use strict';
 
+const IconGrid = imports.ui.iconGrid;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
@@ -34,8 +35,13 @@ class ClickToCloseOverview {
 		this._clickAction.connect('clicked', () => {
 			if (!this._swiping) {
 				if (Main.overview.viewSelector._appsPage.visible)
-					Main.overview.viewSelector.appDisplay.animate();
-				Main.overview.toggle();
+					Main.overview.viewSelector.appDisplay.animate(
+						IconGrid.AnimationDirection.OUT, () => {
+							Main.overview.viewSelector._appsPage.hide();
+							Main.overview.toggle();
+					});
+				else
+					Main.overview.toggle();
 			}
 		});
 		Main.overview.viewSelector.add_action(this._clickAction);

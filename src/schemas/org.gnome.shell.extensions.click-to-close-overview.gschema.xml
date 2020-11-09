@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+	<schema id="org.gnome.shell.extensions.click-to-close-overview"
+		path="/org/gnome/shell/extensions/click-to-close-overview/">
+		<key name="animate-app-display" type="b">
+			<default>true</default>
+		</key>
+	</schema>
+</schemalist>

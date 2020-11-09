@@ -22,8 +22,26 @@ const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
 const Clutter = imports.gi.Clutter;
+const Gio = imports.gi.Gio;
+
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+
+const GSCHEMA = 'org.gnome.shell.extensions.click-to-close-overview';
 
 class ClickToCloseOverview {
+	constructor() {
+		let gschema = Gio.SettingsSchemaSource.new_from_directory(
+			Me.dir.get_child('schemas').get_path(),
+			Gio.SettingsSchemaSource.get_default(),
+			false
+		);
+
+		this.settings = new Gio.Settings({
+			settings_schema: gschema.lookup(GSCHEMA, true)
+		});
+	}
+
 	enable() {
 		this._handlers = [];
 		this._swiping = false;
@@ -34,7 +52,8 @@ class ClickToCloseOverview {
 		this._clickAction = new Clutter.ClickAction();
 		this._clickAction.connect('clicked', () => {
 			if (!this._swiping) {
-				if (Main.overview.viewSelector._appsPage.visible)
+				if (Main.overview.viewSelector._appsPage.visible &&
+					this.settings.get_boolean('animate-app-display'))
 					Main.overview.viewSelector.appDisplay.animate(
 						IconGrid.AnimationDirection.OUT, () => {
 							Main.overview.viewSelector._appsPage.hide();

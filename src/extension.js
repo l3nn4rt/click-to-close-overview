@@ -57,7 +57,7 @@ class ClickToCloseOverview {
 		this._handlers.push([wsDisplay._clickAction, wsCallback]);
 
 
-		this._oldReactivity = Main.overview.viewSelector._appsPage.reactive;
+		this._oldAppsPageReactivity = Main.overview.viewSelector._appsPage.reactive;
 		Main.overview.viewSelector._appsPage.reactive = true;
 
 		this._appsPageClickAction = new Clutter.ClickAction();
@@ -95,8 +95,8 @@ class ClickToCloseOverview {
 	}
 
 	disable() {
-		Main.overview.viewSelector._appsPage.reactive = this._oldReactivity;
-		this._oldReactivity = null;
+		Main.overview.viewSelector._appsPage.reactive = this._oldAppsPageReactivity;
+		this._oldAppsPageReactivity = null;
 
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;

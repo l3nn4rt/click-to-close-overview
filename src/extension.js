@@ -46,8 +46,8 @@ class ClickToCloseOverview {
 		this._handlers = [];
 		this._swiping = false;
 
-		this._oldReactivity = Main.overview.viewSelector.reactive;
-		Main.overview.viewSelector.reactive = true;
+		this._oldReactivity = Main.overview.viewSelector._appsPage.reactive;
+		Main.overview.viewSelector._appsPage.reactive = true;
 
 		this._clickAction = new Clutter.ClickAction();
 		this._clickAction.connect('clicked', () => {
@@ -63,10 +63,9 @@ class ClickToCloseOverview {
 					Main.overview.toggle();
 			}
 		});
-		Main.overview.viewSelector.add_action(this._clickAction);
+		Main.overview.viewSelector._appsPage.add_action(this._clickAction);
 
 		[
-			Main.overview.viewSelector._workspacesDisplay,
 			Main.overview.viewSelector.appDisplay
 		].map(display => display._swipeTracker).forEach(tracker => {
 			this._handlers.push([
@@ -85,13 +84,13 @@ class ClickToCloseOverview {
 	}
 
 	disable() {
-		Main.overview.viewSelector.reactive = this._oldReactivity;
+		Main.overview.viewSelector._appsPage.reactive = this._oldReactivity;
 		this._oldReactivity = null;
 
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;
 
-		Main.overview.viewSelector.remove_action(this._clickAction);
+		Main.overview.viewSelector._appsPage.remove_action(this._clickAction);
 	}
 }
 

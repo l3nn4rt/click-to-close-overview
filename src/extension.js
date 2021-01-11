@@ -49,8 +49,8 @@ class ClickToCloseOverview {
 		this._oldReactivity = Main.overview.viewSelector._appsPage.reactive;
 		Main.overview.viewSelector._appsPage.reactive = true;
 
-		this._clickAction = new Clutter.ClickAction();
-		this._clickAction.connect('clicked', () => {
+		this._appsPageClickAction = new Clutter.ClickAction();
+		this._appsPageClickAction.connect('clicked', () => {
 			if (!this._swiping) {
 				if (Main.overview.viewSelector._appsPage.visible &&
 					this.settings.get_boolean('animate-app-display'))
@@ -63,7 +63,7 @@ class ClickToCloseOverview {
 					Main.overview.toggle();
 			}
 		});
-		Main.overview.viewSelector._appsPage.add_action(this._clickAction);
+		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);
 
 		[
 			Main.overview.viewSelector.appDisplay
@@ -90,7 +90,7 @@ class ClickToCloseOverview {
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;
 
-		Main.overview.viewSelector._appsPage.remove_action(this._clickAction);
+		Main.overview.viewSelector._appsPage.remove_action(this._appsPageClickAction);
 	}
 }
 

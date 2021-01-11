@@ -46,6 +46,17 @@ class ClickToCloseOverview {
 		this._handlers = [];
 		this._swiping = false;
 
+		const wsDisplay = Main.overview.viewSelector._workspacesDisplay;
+		const wsCallback = wsDisplay._clickAction.connect('clicked', action => {
+				let event = Clutter.get_current_event();
+				let index = wsDisplay._getMonitorIndexForEvent(event);
+				if ((action.get_button() == 1 || action.get_button() == 0) &&
+						!wsDisplay._workspacesViews[index].getActiveWorkspace().isEmpty())
+						Main.overview.hide();
+		});
+		this._handlers.push([wsDisplay._clickAction, wsCallback]);
+
+
 		this._oldReactivity = Main.overview.viewSelector._appsPage.reactive;
 		Main.overview.viewSelector._appsPage.reactive = true;
 

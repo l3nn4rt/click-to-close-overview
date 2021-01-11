@@ -61,10 +61,10 @@ class ClickToCloseOverview {
 		Main.overview.viewSelector._appsPage.reactive = true;
 
 		this._appsPageClickAction = new Clutter.ClickAction();
-		this._appsPageClickAction.connect('clicked', () => {
-			if (!this._swiping) {
-				if (Main.overview.viewSelector._appsPage.visible &&
-					this.settings.get_boolean('animate-app-display'))
+		this._appsPageClickAction.connect('clicked', action => {
+			if ((action.get_button() == 1 || action.get_button() == 0) &&
+				!this._swiping) {
+				if (this.settings.get_boolean('animate-app-display'))
 					Main.overview.viewSelector.appDisplay.animate(
 						IconGrid.AnimationDirection.OUT, () => {
 							Main.overview.viewSelector._appsPage.hide();
@@ -76,22 +76,19 @@ class ClickToCloseOverview {
 		});
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);
 
-		[
-			Main.overview.viewSelector.appDisplay
-		].map(display => display._swipeTracker).forEach(tracker => {
-			this._handlers.push([
-				tracker,
-				tracker.connect('begin', () => {
-					this._swiping = true;
-				})
-			]);
-			this._handlers.push([
-				tracker,
-				tracker.connect('end', () => {
-					Mainloop.timeout_add(0, () => this._swiping = false);
-				})
-			]);
-		});
+		const tracker = Main.overview.viewSelector.appDisplay._swipeTracker;
+		this._handlers.push([
+			tracker,
+			tracker.connect('begin', () => {
+				this._swiping = true;
+			})
+		]);
+		this._handlers.push([
+			tracker,
+			tracker.connect('end', () => {
+				Mainloop.timeout_add(0, () => this._swiping = false);
+			})
+		]);
 	}
 
 	disable() {

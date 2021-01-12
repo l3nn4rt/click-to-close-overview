@@ -46,6 +46,8 @@ class ClickToCloseOverview {
 		this._handlers = [];
 		this._swiping = false;
 
+
+		/* connect to existing click action in workspaces page */
 		const wsDisplay = Main.overview.viewSelector._workspacesDisplay;
 		const wsCallback = wsDisplay._clickAction.connect('clicked', action => {
 				let event = Clutter.get_current_event();
@@ -57,11 +59,13 @@ class ClickToCloseOverview {
 		this._handlers.push([wsDisplay._clickAction, wsCallback]);
 
 
+		/* create new click action for the apps page */
 		this._oldAppsPageReactivity = Main.overview.viewSelector._appsPage.reactive;
 		Main.overview.viewSelector._appsPage.reactive = true;
 
 		this._appsPageClickAction = new Clutter.ClickAction();
 		this._appsPageClickAction.connect('clicked', action => {
+			/* don' close the overview while scrolling */
 			if ((action.get_button() == 1 || action.get_button() == 0) &&
 				!this._swiping) {
 				if (this.settings.get_boolean('animate-app-display'))
@@ -76,6 +80,7 @@ class ClickToCloseOverview {
 		});
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);
 
+		/* keep track of scrolls in the apps page */
 		const tracker = Main.overview.viewSelector.appDisplay._swipeTracker;
 		this._handlers.push([
 			tracker,
@@ -92,9 +97,11 @@ class ClickToCloseOverview {
 	}
 
 	disable() {
+		/* restore apps page reactivity */
 		Main.overview.viewSelector._appsPage.reactive = this._oldAppsPageReactivity;
 		this._oldAppsPageReactivity = null;
 
+		/* disconnect callbacks */
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;
 

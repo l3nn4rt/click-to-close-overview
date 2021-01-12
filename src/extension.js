@@ -67,6 +67,7 @@ class ClickToCloseOverview {
 		this._appsPageClickAction.connect('clicked', action => {
 			/* don' close the overview while scrolling */
 			if ((action.get_button() == 1 || action.get_button() == 0) &&
+				!Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
 				!this._swiping) {
 				if (this.settings.get_boolean('animate-app-display'))
 					Main.overview.viewSelector.appDisplay.animate(

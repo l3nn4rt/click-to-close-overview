@@ -59,13 +59,14 @@ class ClickToCloseOverview {
 		this._handlers.push([wsDisplay._clickAction, wsCallback]);
 
 
-		/* create new click action for the apps page */
+		/* make the apps page susceptible to clicks */
 		this._oldAppsPageReactivity = Main.overview.viewSelector._appsPage.reactive;
 		Main.overview.viewSelector._appsPage.reactive = true;
 
+		/* create new click action for the apps page */
 		this._appsPageClickAction = new Clutter.ClickAction();
 		this._appsPageClickAction.connect('clicked', action => {
-			/* don' close the overview while scrolling */
+			/* don't close the overview while scrolling or animating */
 			if ((action.get_button() == 1 || action.get_button() == 0) &&
 				!Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
 				!this._swiping) {
@@ -79,6 +80,7 @@ class ClickToCloseOverview {
 					Main.overview.toggle();
 			}
 		});
+		/* connect click action to the apps page */
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);
 
 		/* keep track of scrolls in the apps page */
@@ -106,7 +108,9 @@ class ClickToCloseOverview {
 		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._handlers = null;
 
+		/* disconnect click action from the apps page */
 		Main.overview.viewSelector._appsPage.remove_action(this._appsPageClickAction);
+		this._appsPageClickAction = null;
 	}
 }
 

@@ -68,20 +68,28 @@ class ClickToCloseOverview {
 		/* create new click action for the apps page */
 		this._appsPageClickAction = new Clutter.ClickAction();
 		const appCallback = this._appsPageClickAction.connect('clicked', action => {
-			/* don't close the overview while scrolling or animating */
-			if ((action.get_button() == 1 || action.get_button() == 0) &&
-			    (!Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length ||
-			        this.settings.get_boolean('fast-app-close')) &&
-			    !this._appsPageSwiping) {
-				if (this.settings.get_boolean('animate-app-display'))
-					Main.overview.viewSelector.appDisplay.animate(
-						IconGrid.AnimationDirection.OUT, () => {
-							Main.overview.viewSelector._appsPage.hide();
-							Main.overview.toggle();
-					});
-				else
-					Main.overview.toggle();
-			}
+			/* ignore non-primary clicks */
+			if (action.get_button() !== 1 && action.get_button() !== 0)
+				return;
+
+			/* don't close while animating, unless fast-app-close enabled */
+			if (Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
+			    !this.settings.get_boolean('fast-app-close'))
+			    return;
+
+			/* don't close while scrolling */
+			if (this._appsPageSwiping)
+				return;
+
+			/* close, and animate if animate-app-display enabled */
+			if (this.settings.get_boolean('animate-app-display'))
+				Main.overview.viewSelector.appDisplay.animate(
+					IconGrid.AnimationDirection.OUT, () => {
+						Main.overview.viewSelector._appsPage.hide();
+						Main.overview.toggle();
+				});
+			else
+				Main.overview.toggle();
 		});
 		/* connect click action to the apps page */
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);

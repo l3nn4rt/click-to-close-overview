@@ -70,7 +70,7 @@ function buildPrefsWidget() {
 
 
 	const fastAppCloseLabel = new Gtk.Label({
-		label: 'Allow to close apps page during grid expansion:',
+		label: 'Allow to close applications page during grid expansion:',
 		halign: Gtk.Align.START,
 		hexpand: true,
 		visible: true

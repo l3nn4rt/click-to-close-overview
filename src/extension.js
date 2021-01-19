@@ -43,20 +43,22 @@ class ClickToCloseOverview {
 	}
 
 	enable() {
-		this._handlers = [];
-		this._swiping = false;
+		/* connections to undo when disabling go here */
+		this._connections = [];
+		/* true when the user is scrolling apps grid */
+		this._appsPageSwiping = false;
 
 
 		/* connect to existing click action in workspaces page */
 		const wsDisplay = Main.overview.viewSelector._workspacesDisplay;
 		const wsCallback = wsDisplay._clickAction.connect('clicked', action => {
-				let event = Clutter.get_current_event();
-				let index = wsDisplay._getMonitorIndexForEvent(event);
-				if ((action.get_button() == 1 || action.get_button() == 0) &&
-						!wsDisplay._workspacesViews[index].getActiveWorkspace().isEmpty())
-						Main.overview.hide();
+			let event = Clutter.get_current_event();
+			let index = wsDisplay._getMonitorIndexForEvent(event);
+			if ((action.get_button() == 1 || action.get_button() == 0) &&
+			    !wsDisplay._workspacesViews[index].getActiveWorkspace().isEmpty())
+				Main.overview.hide();
 		});
-		this._handlers.push([wsDisplay._clickAction, wsCallback]);
+		this._connections.push([wsDisplay._clickAction, wsCallback]);
 
 
 		/* make the apps page susceptible to clicks */
@@ -68,8 +70,8 @@ class ClickToCloseOverview {
 		const appCallback = this._appsPageClickAction.connect('clicked', action => {
 			/* don't close the overview while scrolling or animating */
 			if ((action.get_button() == 1 || action.get_button() == 0) &&
-				!Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
-				!this._swiping) {
+			    !Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
+			    !this._appsPageSwiping) {
 				if (this.settings.get_boolean('animate-app-display'))
 					Main.overview.viewSelector.appDisplay.animate(
 						IconGrid.AnimationDirection.OUT, () => {
@@ -82,20 +84,20 @@ class ClickToCloseOverview {
 		});
 		/* connect click action to the apps page */
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);
-		this._handlers.push([this._appsPageClickAction, appCallback]);
+		this._connections.push([this._appsPageClickAction, appCallback]);
 
 		/* keep track of scrolls in the apps page */
 		const tracker = Main.overview.viewSelector.appDisplay._swipeTracker;
-		this._handlers.push([
+		this._connections.push([
 			tracker,
 			tracker.connect('begin', () => {
-				this._swiping = true;
+				this._appsPageSwiping = true;
 			})
 		]);
-		this._handlers.push([
+		this._connections.push([
 			tracker,
 			tracker.connect('end', () => {
-				Mainloop.timeout_add(0, () => this._swiping = false);
+				Mainloop.timeout_add(0, () => this._appsPageSwiping = false);
 			})
 		]);
 	}
@@ -106,8 +108,8 @@ class ClickToCloseOverview {
 		this._oldAppsPageReactivity = null;
 
 		/* disconnect callbacks */
-		this._handlers.forEach(([obj, callback]) => obj.disconnect(callback));
-		this._handlers = null;
+		this._connections.forEach(([obj, callback]) => obj.disconnect(callback));
+		this._connections = null;
 
 		/* disconnect click action from the apps page */
 		Main.overview.viewSelector._appsPage.remove_action(this._appsPageClickAction);

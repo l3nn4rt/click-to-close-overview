@@ -40,6 +40,12 @@ class ClickToCloseOverview {
 		this.settings = new Gio.Settings({
 			settings_schema: gschema.lookup(GSCHEMA, true)
 		});
+
+		this.closeAppsPage = () => {
+			Main.overview.viewSelector._appsPage.hide();
+			Main.overview.toggle();
+			this._appsPageClosing = false;
+		};
 	}
 
 	enable() {
@@ -47,6 +53,8 @@ class ClickToCloseOverview {
 		this._connections = [];
 		/* true when the user is scrolling apps grid */
 		this._appsPageSwiping = false;
+		/* true when closing the apps page for a click */
+		this._appsPageClosing = false;
 
 
 		/* connect to existing click action in workspaces page */
@@ -81,15 +89,17 @@ class ClickToCloseOverview {
 			if (this._appsPageSwiping)
 				return;
 
+			/* prevent multiple animations when fast-app-close enabled */
+			if (this._appsPageClosing)
+				return;
+			this._appsPageClosing = true;
+
 			/* close, and animate if animate-app-display enabled */
 			if (this.settings.get_boolean('animate-app-display'))
 				Main.overview.viewSelector.appDisplay.animate(
-					IconGrid.AnimationDirection.OUT, () => {
-						Main.overview.viewSelector._appsPage.hide();
-						Main.overview.toggle();
-				});
+					IconGrid.AnimationDirection.OUT, this.closeAppsPage);
 			else
-				Main.overview.toggle();
+				this.closeAppsPage();
 		});
 		/* connect click action to the apps page */
 		Main.overview.viewSelector._appsPage.add_action(this._appsPageClickAction);

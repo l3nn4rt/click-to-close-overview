@@ -28,7 +28,7 @@ const GSCHEMA = 'org.gnome.shell.extensions.click-to-close-overview';
 function init() { }
 
 function buildPrefsWidget() {
-	let gschema = Gio.SettingsSchemaSource.new_from_directory(
+	const gschema = Gio.SettingsSchemaSource.new_from_directory(
 		Me.dir.get_child('schemas').get_path(),
 		Gio.SettingsSchemaSource.get_default(),
 		false
@@ -38,31 +38,32 @@ function buildPrefsWidget() {
 		settings_schema: gschema.lookup(GSCHEMA, true)
 	});
 
-	let prefsWidget = new Gtk.Grid({
+	const prefsWidget = new Gtk.Grid({
 		margin: 24,
 		column_spacing: 12,
 		row_spacing: 12,
 		visible: true
 	});
 
-	let toggleLabel = new Gtk.Label({
+
+	const animateAppCloseLabel = new Gtk.Label({
 		label: 'Show animation when closing the applications page:',
 		halign: Gtk.Align.START,
 		hexpand: true,
 		visible: true
 	});
-	prefsWidget.attach(toggleLabel, 0, 0, 1, 1);
+	prefsWidget.attach(animateAppCloseLabel, 0, 0, 1, 1);
 
-	let toggle = new Gtk.Switch({
+	const animateAppCloseSwitch = new Gtk.Switch({
 		active: this.settings.get_boolean('animate-app-display'),
 		halign: Gtk.Align.END,
 		visible: true
 	});
-	prefsWidget.attach(toggle, 1, 0, 1, 1);
+	prefsWidget.attach(animateAppCloseSwitch, 1, 0, 1, 1);
 
 	this.settings.bind(
 		'animate-app-display',
-		toggle,
+		animateAppCloseSwitch,
 		'active',
 		Gio.SettingsBindFlags.DEFAULT
 	);

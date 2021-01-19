@@ -5,5 +5,8 @@
 		<key name="animate-app-display" type="b">
 			<default>true</default>
 		</key>
+		<key name="fast-app-close" type="b">
+			<default>false</default>
+		</key>
 	</schema>
 </schemalist>

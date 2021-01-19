@@ -70,7 +70,8 @@ class ClickToCloseOverview {
 		const appCallback = this._appsPageClickAction.connect('clicked', action => {
 			/* don't close the overview while scrolling or animating */
 			if ((action.get_button() == 1 || action.get_button() == 0) &&
-			    !Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length &&
+			    (!Main.overview.viewSelector.appDisplay._grid._clonesAnimating.length ||
+			        this.settings.get_boolean('fast-app-close')) &&
 			    !this._appsPageSwiping) {
 				if (this.settings.get_boolean('animate-app-display'))
 					Main.overview.viewSelector.appDisplay.animate(

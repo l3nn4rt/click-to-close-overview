@@ -68,5 +68,28 @@ function buildPrefsWidget() {
 		Gio.SettingsBindFlags.DEFAULT
 	);
 
+
+	const fastAppCloseLabel = new Gtk.Label({
+		label: 'Allow to close apps page during grid expansion:',
+		halign: Gtk.Align.START,
+		hexpand: true,
+		visible: true
+	});
+	prefsWidget.attach(fastAppCloseLabel, 0, 1, 1, 1);
+
+	const fastAppCloseSwitch = new Gtk.Switch({
+		active: this.settings.get_boolean('fast-app-close'),
+		halign: Gtk.Align.END,
+		visible: true
+	});
+	prefsWidget.attach(fastAppCloseSwitch, 1, 1, 1, 1);
+
+	this.settings.bind(
+		'fast-app-close',
+		fastAppCloseSwitch,
+		'active',
+		Gio.SettingsBindFlags.DEFAULT
+	);
+
 	return prefsWidget;
 }

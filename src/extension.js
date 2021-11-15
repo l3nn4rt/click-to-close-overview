@@ -27,8 +27,6 @@ const Gio = imports.gi.Gio;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
-const GSCHEMA = 'org.gnome.shell.extensions.click-to-close-overview';
-
 class ClickToCloseOverview {
 	enable() {
 		/* connections to undo when disabling go here */

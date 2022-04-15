@@ -4,8 +4,9 @@
   "uuid": "click-to-close-overview@l3nn4rt.github.io",
   "shell-version": [
     "40",
-    "41"
+    "41",
+    "42"
   ],
   "url": "https://github.com/l3nn4rt/click-to-close-overview",
-  "version": 5
+  "version": 6
 }

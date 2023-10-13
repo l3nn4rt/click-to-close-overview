@@ -17,17 +17,10 @@
  */
 'use strict';
 
-const IconGrid = imports.ui.iconGrid;
-const Main = imports.ui.main;
-const Mainloop = imports.mainloop;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import Clutter from 'gi://Clutter';
 
-const Clutter = imports.gi.Clutter;
-const Gio = imports.gi.Gio;
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-class ClickToCloseOverview {
+export default class ClickToCloseOverview {
 	enable() {
 		/* connections to undo when disabling go here */
 		this._connections = [];
@@ -90,8 +83,4 @@ class ClickToCloseOverview {
 		Main.overview._overview._controls.remove_action(this._clickAaction);
 		this._clickAaction = null;
 	}
-}
-
-function init() {
-	return new ClickToCloseOverview();
 }

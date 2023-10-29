@@ -36,18 +36,6 @@ export default class ClickToCloseOverview {
 			if (action.get_button() !== 1 && action.get_button() !== 0)
 				return;
 
-			/* ignore clicks when showing other app pages */
-			const appDisplay = Main.overview._overview._controls._appDisplay;
-			const showingPrevPage = appDisplay._prevPageIndicator.visible;
-			const showingNextPage = appDisplay._nextPageIndicator.visible;
-			if (showingPrevPage || showingNextPage) {
-				/* Workaround: GS is not setting these values to false after
-				 * changing app page. */
-				appDisplay._prevPageIndicator.visible = false;
-				appDisplay._nextPageIndicator.visible = false;
-				return;
-			}
-
 			/* clicked actor */
 			const [x, y] = global.get_pointer();
 			const actor = global.stage.get_actor_at_pos(Clutter.PickMode.ALL, x, y);

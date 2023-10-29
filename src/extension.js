@@ -23,8 +23,8 @@ import Clutter from 'gi://Clutter';
 export default class ClickToCloseOverview {
 	enable() {
 		/* create new click action */
-		this._clickAaction = new Clutter.ClickAction();
-		this._clickAaction.connect('clicked', action => {
+		this._clickAction = new Clutter.ClickAction();
+		this._clickAction.connect('clicked', action => {
 			/* ignore non-primary clicks */
 			if (action.get_button() !== 1 && action.get_button() !== 0)
 				return;
@@ -42,12 +42,12 @@ export default class ClickToCloseOverview {
 			Main.overview.toggle();
 		});
 		/* connect click action to the overview */
-		Main.layoutManager.overviewGroup.add_action(this._clickAaction);
+		Main.layoutManager.overviewGroup.add_action(this._clickAction);
 	}
 
 	disable() {
 		/* disconnect click action from the overview */
-		Main.layoutManager.overviewGroup.remove_action(this._clickAaction);
-		delete this._clickAaction;
+		Main.layoutManager.overviewGroup.remove_action(this._clickAction);
+		delete this._clickAction;
 	}
 }

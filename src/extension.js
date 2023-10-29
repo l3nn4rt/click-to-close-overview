@@ -42,11 +42,6 @@ export default class ClickToCloseOverview {
 					|| actor.get_parent().get_parent() === searchBox)
 				return;
 
-			/* propagate clicks inside thumbnails box */
-			const thumbnailsBox = Main.overview._overview._controls._thumbnailsBox;
-			if (actor.get_parent().get_parent() === thumbnailsBox)
-				return actor.get_parent().activate();
-
 			Main.overview.toggle();
 		});
 		/* connect click action to the overview */

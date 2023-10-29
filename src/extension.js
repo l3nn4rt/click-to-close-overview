@@ -25,10 +25,6 @@ export default class ClickToCloseOverview {
 		/* connections to undo when disabling go here */
 		this._connections = [];
 
-		/* make the overview susceptible to clicks */
-		this._oldReactivity = Main.overview._overview._controls.reactive;
-		Main.overview._overview._controls.reactive = true;
-
 		/* create new click action */
 		this._clickAaction = new Clutter.ClickAction();
 		const callback = this._clickAaction.connect('clicked', action => {
@@ -54,21 +50,17 @@ export default class ClickToCloseOverview {
 			Main.overview.toggle();
 		});
 		/* connect click action to the overview */
-		Main.overview._overview._controls.add_action(this._clickAaction);
+		Main.layoutManager.overviewGroup.add_action(this._clickAaction);
 		this._connections.push([this._clickAaction, callback]);
 	}
 
 	disable() {
-		/* restore overview reactivity */
-		Main.overview._overview._controls.reactive = this._oldReactivity;
-		this._oldReactivity = null;
-
 		/* disconnect callbacks */
 		this._connections.forEach(([obj, callback]) => obj.disconnect(callback));
 		this._connections = null;
 
 		/* disconnect click action from the overview */
-		Main.overview._overview._controls.remove_action(this._clickAaction);
+		Main.layoutManager.overviewGroup.remove_action(this._clickAaction);
 		this._clickAaction = null;
 	}
 }

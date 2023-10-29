@@ -22,12 +22,9 @@ import Clutter from 'gi://Clutter';
 
 export default class ClickToCloseOverview {
 	enable() {
-		/* connections to undo when disabling go here */
-		this._connections = [];
-
 		/* create new click action */
 		this._clickAaction = new Clutter.ClickAction();
-		const callback = this._clickAaction.connect('clicked', action => {
+		this._clickAaction.connect('clicked', action => {
 			/* ignore non-primary clicks */
 			if (action.get_button() !== 1 && action.get_button() !== 0)
 				return;
@@ -46,16 +43,11 @@ export default class ClickToCloseOverview {
 		});
 		/* connect click action to the overview */
 		Main.layoutManager.overviewGroup.add_action(this._clickAaction);
-		this._connections.push([this._clickAaction, callback]);
 	}
 
 	disable() {
-		/* disconnect callbacks */
-		this._connections.forEach(([obj, callback]) => obj.disconnect(callback));
-		this._connections = null;
-
 		/* disconnect click action from the overview */
 		Main.layoutManager.overviewGroup.remove_action(this._clickAaction);
-		this._clickAaction = null;
+		delete this._clickAaction;
 	}
 }
